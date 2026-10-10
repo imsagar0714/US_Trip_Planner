@@ -31,12 +31,27 @@ def _geocode(place):
 
 
 def _fallback_point(place, index):
-    # A deterministic visual fallback keeps the demo usable without external API access.
+    """Keep common demo locations geographically accurate when geocoding is unavailable."""
     seeds = [
         (32.7767, -96.7970), (29.7604, -95.3698), (33.7490, -84.3880),
         (39.7392, -104.9903), (36.1627, -86.7816), (34.0522, -118.2437),
     ]
-    lat, lng = seeds[index % len(seeds)]
+    known_places = {
+        "new york": (40.7128, -74.0060),
+        "dallas": (32.7767, -96.7970),
+        "houston": (29.7604, -95.3698),
+        "atlanta": (33.7490, -84.3880),
+        "los angeles": (34.0522, -118.2437),
+        "chicago": (41.8781, -87.6298),
+        "new york ny": (40.7128, -74.0060),
+        "dallas tx": (32.7767, -96.7970),
+        "houston tx": (29.7604, -95.3698),
+        "atlanta ga": (33.7490, -84.3880),
+        "los angeles ca": (34.0522, -118.2437),
+        "chicago il": (41.8781, -87.6298),
+    }
+    key = " ".join(place.lower().replace(",", " ").split())
+    lat, lng = known_places.get(key, seeds[index % len(seeds)])
     return {"lat": lat, "lng": lng, "label": place}
 
 
